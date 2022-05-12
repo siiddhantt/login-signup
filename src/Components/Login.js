@@ -1,12 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 function Login() {
-    const [email, setEmail] = useState("")
-    const [pass, setPass] = useState("")
-    const submit = (e) => {
-        e.preventDefault()
+    const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [pass, setPass] = useState("");
+    const submit = async (e) => {
+        e.preventDefault();
         if (!email || !pass) {
-            alert("Email or Password is missing!")
+            alert("Email or Password is missing!");
+        }
+        else{
+            const response  = await fetch('http://localhost:5000/api/auth/login',{
+                method : 'POST',
+                headers : {
+                    'Accept' : '*/*',
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify({email:`${email}`, password:`${pass}`}) 
+            });
+            const json = await response.json();
+            if(json.success==true){
+                localStorage.setItem('token', json.authToken);
+                navigate('/');
+            }
+            else{
+                alert("Invalid credentials!");
+            }
         }
     }
     return (
