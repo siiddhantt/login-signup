@@ -1,8 +1,13 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
 
 function Signup() {
     const navigate = useNavigate();
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate('/home');
+        }
+    });
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
@@ -23,7 +28,7 @@ function Signup() {
             const json = await response.json();
             if(json.success==true){
                 localStorage.setItem('token', json.authToken);
-                navigate('/login');
+                navigate('/home');
             }
             else{
                 alert("An account with this email already exists!");
